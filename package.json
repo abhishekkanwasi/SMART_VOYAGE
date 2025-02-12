@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "daisyui": "^4.12.23",
+    "dotenv": "^16.4.7",
+    "openai": "^4.84.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.5"

@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Reviews from "../components/Reviews";
-import Itinerary from "../components/Itinerary";
+import { generateItinerary } from "../utils/generateItinerary";
 
 export default function Results() {
   const { destination } = useParams();
   const [reviews, setReviews] = useState([]);
+  const [itinerary, setItinerary] = useState("");
+  const [days, setDays] = useState(3); // Default: 3-day trip
   const [loading, setLoading] = useState(true);
+  const [loadingItinerary, setLoadingItinerary] = useState(false);
 
   useEffect(() => {
     async function fetchReviews() {
@@ -40,9 +43,18 @@ export default function Results() {
     fetchReviews();
   }, [destination]);
 
+  // Function to generate AI itinerary
+  const handleGenerateItinerary = async () => {
+    setLoadingItinerary(true);
+    const result = await generateItinerary(destination, days);
+    setItinerary(result);
+    setLoadingItinerary(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6">
       <h2 className="text-4xl font-bold mb-4 text-center">{destination}</h2>
+
       {loading ? (
         <p className="text-center">Loading information...</p>
       ) : (
@@ -51,9 +63,34 @@ export default function Results() {
             <h3 className="text-2xl font-semibold mb-2">About This Destination</h3>
             <Reviews reviews={reviews} />
           </div>
-          <div className="card bg-gray-700 shadow-lg p-6">
-            <Itinerary destination={destination} />
+
+          {/* User Inputs for AI Itinerary */}
+          <div className="card bg-gray-700 shadow-lg p-6 mb-6">
+            <h3 className="text-2xl font-semibold mb-4">Generate AI Itinerary</h3>
+            <input
+              type="number"
+              min="1"
+              max="14"
+              value={days}
+              onChange={(e) => setDays(Number(e.target.value))}
+              className="input input-bordered text-black w-full p-3 mb-4"
+              placeholder="Enter number of days"
+            />
+            <button
+              onClick={handleGenerateItinerary}
+              className="btn btn-primary w-full px-6 py-3 rounded-lg"
+            >
+              {loadingItinerary ? "Generating..." : "Generate Itinerary"}
+            </button>
           </div>
+
+          {/* Display AI-Generated Itinerary */}
+          {itinerary && (
+            <div className="card bg-gray-800 shadow-lg p-6">
+              <h3 className="text-2xl font-semibold mb-2">AI-Generated Itinerary</h3>
+              <p className="whitespace-pre-line">{itinerary}</p>
+            </div>
+          )}
         </div>
       )}
     </div>
