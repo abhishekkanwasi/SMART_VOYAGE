@@ -1,21 +1,23 @@
 export default function Itinerary({ destination }) {
-    const sampleItinerary = [
-      "🛫 Day 1: Arrival & City Tour",
-      "🏛️ Day 2: Visit Historical Sites",
-      "🏞️ Day 3: Nature & Adventure",
-      "🍽️ Day 4: Food & Culture",
-      "🏖️ Day 5: Relax & Depart",
-    ];
-  
-    return (
-      <div className="mt-6">
-        <h3 className="text-2xl font-semibold mb-2">Suggested Itinerary</h3>
-        <ul className="list-disc pl-6">
-          {sampleItinerary.map((item, index) => (
-            <li key={index} className="mb-1">{item}</li>
-          ))}
-        </ul>
-      </div>
-    );
-  }
-  
+  const sampleItinerary = [
+    { day: "Day 1", activity: "🛫 Arrival & City Tour" },
+    { day: "Day 2", activity: "🏛️ Visit Historical Sites" },
+    { day: "Day 3", activity: "🏞️ Nature & Adventure" },
+    { day: "Day 4", activity: "🍽️ Food & Culture" },
+    { day: "Day 5", activity: "🏖️ Relax & Depart" },
+  ];
+
+  return (
+    <div>
+      <h3 className="text-2xl font-semibold mb-2">Suggested Itinerary</h3>
+      <ul className="timeline timeline-vertical">
+        {sampleItinerary.map((item, index) => (
+          <li key={index} className="timeline-item">
+            <div className="timeline-badge bg-blue-500 text-white">{item.day}</div>
+            <div className="timeline-content p-4 bg-gray-800 rounded-lg">{item.activity}</div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
