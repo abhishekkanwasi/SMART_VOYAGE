@@ -12,31 +12,37 @@ export default function Home() {
   };
 
   return (
-    <div
-      className="fixed top-0 left-0 w-screen h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center"
-      style={{
-        backgroundImage:
-          "url('https://images.unsplash.com/photo-1707343848552-893e05dba6ac?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
-      }}
+    <div 
+      className="fixed top-0 left-0 w-screen h-screen bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: "url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')" }}
     >
-      {/* Dark overlay */}
+      {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
-      {/* Content Box */}
-      <div className="relative bg-black bg-opacity-60 p-8 rounded-lg text-center z-10 w-full max-w-lg shadow-lg">
-        <h1 className="text-5xl font-bold text-white mb-6">🌍 Smart Voyage</h1>
-        <p className="text-lg text-gray-300 mb-6">Find the best travel reviews & itinerary</p>
-        <div className="flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-3">
-          <input
+      {/* Large Frosted Glass Box */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div 
+          className="relative bg-opacity-30 backdrop-blur-2xl shadow-lg w-3/4 h-3/4 flex flex-col items-center justify-center text-center"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1000&auto=format&fit=crop')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
+          <h1 className="text-6xl font-bold text-white mb-6">🌍 Smart Voyage</h1>
+          <p className="text-xl text-gray-300 mb-6">Find the best travel reviews & itinerary</p>
+          
+          {/* Search Bar */}
+          <input 
             type="text"
-            placeholder="Enter destination..."
-            className="input input-bordered text-white placeholder-gray-300 w-full sm:w-80 p-3 rounded-lg bg-gray-800 border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-1/2 p-3 text-black placeholder-gray-600 bg-white bg-opacity-80 border-none focus:ring-2 focus:ring-white"
+            placeholder="Enter your destination..."
             value={destination}
             onChange={(e) => setDestination(e.target.value)}
           />
-          <button
+          <button 
             onClick={handleSearch}
-            className="btn btn-primary w-full sm:w-auto px-6 py-3 rounded-lg"
+            className="mt-4 px-6 py-2 text-lg font-semibold text-white bg-blue-600 hover:bg-blue-700 transition"
           >
             Search
           </button>
