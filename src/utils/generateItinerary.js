@@ -1,23 +1,30 @@
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-  apiKey: "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",
-  dangerouslyAllowBrowser: true,
-});
-
 export async function generateItinerary(destination, days) {
-  try {
-    const prompt = `Generate a detailed ${days}-day travel itinerary for ${destination}. Include morning, afternoon, and evening activities each day. Focus on famous attractions, local food, and unique experiences.`;
+  const apiKey = import.meta.env.VITE_API_KEY; // Get API key from .env
+  if (!apiKey) {
+    console.error("API Key is missing. Make sure your .env file is set up correctly.");
+    return "Error: Missing API Key";
+  }
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.7,
+  try {
+    const response = await fetch("https://api.example.com/generate-itinerary", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`, // Attach API Key
+      },
+      body: JSON.stringify({ destination, days }),
     });
 
-    return response.choices[0].message.content;
+    if (!response.ok) {
+      throw new Error(`Error fetching itinerary: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.itinerary || "No itinerary found.";
   } catch (error) {
     console.error("Error generating itinerary:", error);
-    return "Sorry, we couldn't generate the itinerary. Please try again.";
+    return "Error generating itinerary.";
   }
 }
+console.log("Loaded API Key:", import.meta.env.VITE_API_KEY);
+
