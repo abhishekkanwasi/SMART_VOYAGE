@@ -43,7 +43,7 @@ export default function Results() {
     fetchReviews();
   }, [destination]);
 
-  // Function to generate AI itinerary
+  
   const handleGenerateItinerary = async () => {
     setLoadingItinerary(true);
     const result = await generateItinerary(destination, days);
@@ -64,7 +64,7 @@ export default function Results() {
             <Reviews reviews={reviews} />
           </div>
 
-          {/* User Inputs for AI Itinerary */}
+          
           <div className="card bg-gray-700 shadow-lg p-6 mb-6">
             <h3 className="text-2xl font-semibold mb-4">Generate AI Itinerary</h3>
             <input
@@ -73,7 +73,7 @@ export default function Results() {
               max="14"
               value={days}
               onChange={(e) => setDays(Number(e.target.value))}
-              className="input input-bordered text-black w-full p-3 mb-4"
+              className="input input-bordered text-white w-full p-3 mb-4"
               placeholder="Enter number of days"
             />
             <button
@@ -84,7 +84,7 @@ export default function Results() {
             </button>
           </div>
 
-          {/* Display AI-Generated Itinerary */}
+          
           {itinerary && (
             <div className="card bg-gray-800 shadow-lg p-6">
               <h3 className="text-2xl font-semibold mb-2">AI-Generated Itinerary</h3>
