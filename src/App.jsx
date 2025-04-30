@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Results from "./pages/Results";
+import NearbyLocations from "./pages/NearbyLocations";
 
 export default function App() {
   return (
@@ -8,6 +9,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/results/:destination" element={<Results />} />
+        <Route path="/nearby-locations" element={<NearbyLocations />} />
       </Routes>
     </div>
   );
