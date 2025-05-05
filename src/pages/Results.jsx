@@ -1,20 +1,23 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import Reviews from "../components/Reviews";
-import { generateItinerary } from "../utils/generateItinerary";
-import Navbar from "../components/Navbar"; // <-- Step 1: Import the Navbar
-import { Client } from "@googlemaps/google-maps-services-js";
+import Navbar from "../components/Navbar";
+import { generateReviews } from "../utils/generateReviews";
+import { summarizeReviews } from "../utils/googlePlaces";
 
 export default function Results() {
   const { destination } = useParams();
   const [reviews, setReviews] = useState([]);
-  const [itinerary, setItinerary] = useState("");
-  const [days, setDays] = useState(3); // Default: 3-day trip
   const [loading, setLoading] = useState(true);
-  const [loadingItinerary, setLoadingItinerary] = useState(false);
-  const [googleSummary, setGoogleSummary] = useState("");
-  const [testApiResponse, setTestApiResponse] = useState(null); // State to store API response
+  const [aiReviews, setAiReviews] = useState("");
+  const [loadingAiReviews, setLoadingAiReviews] = useState(false);
+  const [summary, setSummary] = useState("");
+  const [loadingSummary, setLoadingSummary] = useState(false);
+  const [showReviews, setShowReviews] = useState(false);
+  const [positiveReviews, setPositiveReviews] = useState([]);
+  const [negativeReviews, setNegativeReviews] = useState([]);
 
+  // Fetch Wikipedia information
   useEffect(() => {
     async function fetchReviews() {
       try {
@@ -56,82 +59,81 @@ export default function Results() {
     fetchReviews();
   }, [destination]);
 
+  // Generate AI Reviews
   useEffect(() => {
-    async function fetchGoogleReviews() {
-      const API_KEY = import.meta.env.VITE_API_KEY;
-      const client = new Client({});
+    const fetchAIReviews = async () => {
+      if (!destination) return;
 
+      setLoadingAiReviews(true);
       try {
-        // Get the place ID for the given destination
-        const placesResult = await client.textSearch({
-          params: {
-            query: destination,
-            key: API_KEY,
-          },
+        const generatedReviews = await generateReviews(destination);
+        setAiReviews(generatedReviews);
+        // Split reviews into positive and negative
+        const reviewsArr = generatedReviews
+          .replace(/\*/g, "")
+          .split(/\n{2,}/)
+          .filter(Boolean);
+        const positives = [];
+        const negatives = [];
+        reviewsArr.forEach((review) => {
+          const lower = review.toLowerCase();
+          if (
+            lower.includes("1/5") ||
+            lower.includes("2/5") ||
+            lower.includes("bad") ||
+            lower.includes("poor") ||
+            lower.includes("negative") ||
+            lower.includes("disappoint") ||
+            lower.includes("not recommend")
+          ) {
+            negatives.push(review);
+          } else if (
+            lower.includes("4/5") ||
+            lower.includes("5/5") ||
+            lower.includes("excellent") ||
+            lower.includes("amazing") ||
+            lower.includes("great") ||
+            lower.includes("wonderful") ||
+            lower.includes("positive") ||
+            lower.includes("enjoyed")
+          ) {
+            positives.push(review);
+          } else {
+            // If not clear, default to positive
+            positives.push(review);
+          }
         });
-
-        if (
-          !placesResult.data.results ||
-          placesResult.data.results.length === 0
-        ) {
-          console.log("No results found for the given destination.");
-          return;
-        }
-
-        const placeId = placesResult.data.results[0].place_id;
-
-        // Get detailed information about the place, including reviews
-        const placeDetails = await client.placeDetails({
-          params: {
-            place_id: placeId,
-            key: API_KEY,
-          },
-        });
-
-        if (!placeDetails.data.result.reviews) {
-          console.log("No reviews available for this destination.");
-          return;
-        }
-
-        // Extract reviews and ratings
-        const reviews = placeDetails.data.result.reviews.map((review) => ({
-          rating: review.rating,
-          text: review.text,
-        }));
-
-        // Log reviews to the VS Code terminal
-        reviews.forEach((review) => {
-          console.log(`Rating: ${review.rating}, Review: ${review.text}`);
-        });
+        setPositiveReviews(positives);
+        setNegativeReviews(negatives);
+        // Summarize the AI-generated reviews
+        setLoadingSummary(true);
+        const summaryText = await summarizeReviews([generatedReviews]);
+        setSummary(summaryText);
       } catch (error) {
-        console.error("Error fetching reviews:", error);
+        console.error("Error generating AI reviews:", error);
+        setAiReviews("Failed to generate reviews.");
+        setSummary("");
+        setPositiveReviews([]);
+        setNegativeReviews([]);
+      } finally {
+        setLoadingAiReviews(false);
+        setLoadingSummary(false);
       }
-    }
+    };
 
-    fetchGoogleReviews();
+    fetchAIReviews();
   }, [destination]);
-
-  useEffect(() => {
-    async function testAPI() {
-      const response = await testGooglePlacesAPI("New York");
-      setTestApiResponse(response); // Store the response in state
-    }
-
-    testAPI();
-  }, []);
-
-  const handleGenerateItinerary = async () => {
-    setLoadingItinerary(true);
-    const result = await generateItinerary(destination, days);
-    setItinerary(result);
-    setLoadingItinerary(false);
-  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      <Navbar /> {/* <-- Step 2: Use the Navbar at the top */}
+      <Navbar />
       <div className="p-6">
-        <h2 className="text-4xl font-bold mb-4 text-center">{destination}</h2>
+        <div className="flex items-center gap-4 mb-4 relative">
+          <h2 className="text-4xl font-bold mx-auto absolute left-1/2 -translate-x-1/2 w-max text-center mt-8 mb-8">
+            {destination}
+          </h2>
+        </div>
+        <div className="h-10" />
 
         {loading ? (
           <p className="text-center">Loading information...</p>
@@ -141,67 +143,112 @@ export default function Results() {
               <h3 className="text-2xl font-semibold mb-2">
                 About This Destination
               </h3>
-              <Reviews reviews={reviews} />
+              <Reviews reviews={reviews.slice(0, 1)} />
             </div>
 
-            {/* Summarized Review Section */}
             <div className="card bg-gray-800 shadow-lg p-6 mb-6">
-              <h3 className="text-2xl font-semibold mb-2">
-                Summarized Reviews
-              </h3>
-              {googleSummary ? (
-                <pre className="whitespace-pre-wrap text-sm">
-                  {googleSummary}
-                </pre>
+              <h3 className="text-2xl font-semibold mb-2">Summarized Review</h3>
+              {loadingSummary ? (
+                <div className="animate-pulse text-gray-400">
+                  Summarizing reviews...
+                </div>
               ) : (
-                <p>Loading reviews...</p>
+                <div className="prose prose-invert max-w-none">
+                  <div className="whitespace-pre-line text-gray-300">
+                    {summary}
+                  </div>
+                </div>
               )}
             </div>
 
-            {/* Temporary Section to Display API Test Response */}
-            <div className="card bg-gray-800 shadow-lg p-6 mb-6">
-              <h3 className="text-2xl font-semibold mb-2">API Test Response</h3>
-              {testApiResponse ? (
-                <pre className="whitespace-pre-wrap text-sm">
-                  {JSON.stringify(testApiResponse, null, 2)}
-                </pre>
-              ) : (
-                <p>Loading API response...</p>
-              )}
-            </div>
-
-            <div className="card bg-gray-700 shadow-lg p-6 mb-6">
-              <h3 className="text-2xl font-semibold mb-4">
-                Generate AI Itinerary
-              </h3>
-              <input
-                type="number"
-                min="1"
-                max="14"
-                value={days}
-                onChange={(e) => setDays(Number(e.target.value))}
-                className="input input-bordered text-white w-full p-3 mb-4"
-                placeholder="Enter number of days"
-              />
-              <button
-                onClick={handleGenerateItinerary}
-                className="btn btn-primary w-full px-6 py-3 rounded-lg"
+            <div className="flex items-center mb-4 max-w-3xl mx-auto">
+              <span
+                className="cursor-pointer text-blue-700 underline text-base font-medium select-none mr-4"
+                onClick={() => setShowReviews((prev) => !prev)}
+                style={{ paddingLeft: 0 }}
               >
-                {loadingItinerary ? "Generating..." : "Generate Itinerary"}
-              </button>
+                {showReviews ? "Hide Reviews" : "View Reviews"}
+              </span>
+              <span className="text-gray-500 text-sm">
+                (Genuine traveler experiences)
+              </span>
             </div>
-
-            {itinerary && (
-              <div className="card bg-gray-800 shadow-lg p-6">
-                <h3 className="text-2xl font-semibold mb-2">
-                  AI-Generated Itinerary
-                </h3>
-                <p className="whitespace-pre-line">{itinerary}</p>
+            {showReviews && (
+              <div className="card bg-gray-800 shadow-lg p-6 mb-6 max-w-3xl mx-auto">
+                {loadingAiReviews ? (
+                  <div className="animate-pulse text-gray-400 text-left mb-4">
+                    Generating authentic reviews...
+                  </div>
+                ) : (
+                  <div className="space-y-8 text-left">
+                    {[...positiveReviews, ...negativeReviews].length > 0 ? (
+                      [...positiveReviews, ...negativeReviews].map(
+                        (review, idx) => {
+                          // Try to extract reviewer name (look for '- Rating:' or first line)
+                          const lines = review
+                            .split("\n")
+                            .map((l) => l.trim())
+                            .filter(Boolean);
+                          let reviewer = "Reviewer";
+                          let reviewTextLines = lines;
+                          // Look for a line like '- Reviewer Name' or 'Reviewer Name - Rating:'
+                          if (lines.length > 0) {
+                            // If the first line starts with '-', remove it
+                            let firstLine = lines[0]
+                              .replace(/^[-\s]+/, "")
+                              .trim();
+                            // If the first line contains 'Rating:', split and take the left part as name
+                            if (/Rating:/i.test(firstLine)) {
+                              reviewer = firstLine
+                                .split(/Rating:/i)[0]
+                                .replace(/[-\s]+$/, "")
+                                .trim();
+                              reviewTextLines = [
+                                firstLine.split(/Rating:/i)[1].trim(),
+                                ...lines.slice(1),
+                              ];
+                            } else if (firstLine.length > 0) {
+                              reviewer = firstLine;
+                              reviewTextLines = lines.slice(1);
+                            }
+                          }
+                          return (
+                            <div
+                              key={idx}
+                              className="bg-gray-100 rounded-lg p-4 shadow-sm mb-2"
+                            >
+                              <div className="font-semibold text-blue-800 mb-1">
+                                {reviewer}
+                              </div>
+                              {reviewTextLines.map((line, i) => (
+                                <div
+                                  key={i}
+                                  className="text-gray-800 text-base leading-relaxed"
+                                >
+                                  {line}
+                                </div>
+                              ))}
+                            </div>
+                          );
+                        }
+                      )
+                    ) : (
+                      <div className="text-gray-500">No reviews available.</div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </div>
         )}
       </div>
+      <Link
+        to={`/itinerary/${destination}`}
+        className="btn btn-primary fixed bottom-8 right-8 px-6 py-3 rounded-full shadow-lg hover:bg-blue-600 transition-colors z-50"
+        style={{ minWidth: "200px" }}
+      >
+        Generate Itinerary
+      </Link>
     </div>
   );
 }

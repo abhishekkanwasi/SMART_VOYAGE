@@ -1,34 +1,55 @@
 import { Link } from "react-router-dom";
+import {
+  FaHome,
+  FaMapMarkerAlt,
+  FaInfoCircle,
+  FaEnvelope,
+} from "react-icons/fa";
+import logo from "../assets/react.svg"; // You can replace with '../public/logo.png' if you want your own logo
 
 export default function Navbar() {
   return (
     <>
-      <nav className="bg-gray-900 fixed top-0 w-full flex justify-between items-center px-6 py-4 shadow-lg z-50">
-        <h1 className="text-white text-xl font-bold">Smart Voyage</h1>
-        <ul className="flex space-x-8 text-white">
+      <nav
+        className="fixed top-0 left-0 w-full flex items-center justify-between px-0 py-3 shadow-lg z-50 bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-600 border-b border-cyan-200"
+        style={{ boxShadow: "0 4px 24px 0 rgba(0, 176, 255, 0.10)" }}
+      >
+        <div className="pl-8">
+          <Link to="/" className="flex items-center gap-3">
+            <img src="/logo.png" alt="Logo" className="h-14 w-14" />
+            <span className="text-white text-2xl font-bold tracking-wide drop-shadow-sm">
+              Smart Voyage
+            </span>
+          </Link>
+        </div>
+        <ul className="flex items-center space-x-8 text-white text-lg font-semibold pr-8">
           <li>
-            <Link to="/" className="hover:underline">
-              Home
+            <Link to="/" className="hover:underline flex items-center gap-2">
+              <FaHome /> Home
             </Link>
           </li>
           <li>
-            <Link to="/destinations" className="hover:underline">
-              Destinations
+            <Link
+              to="/nearby-locations"
+              className="hover:underline flex items-center gap-2"
+            >
+              <FaMapMarkerAlt /> Nearby Locations
             </Link>
           </li>
           <li>
-            <Link to="/about" className="hover:underline">
-              About
+            <Link
+              to="/about"
+              className="hover:underline flex items-center gap-2"
+            >
+              <FaInfoCircle /> About
             </Link>
           </li>
           <li>
-            <Link to="/contact" className="hover:underline">
-              Contact
-            </Link>
-          </li>
-          <li>
-            <Link to="/nearby-locations" className="hover:underline">
-              Nearby Locations
+            <Link
+              to="/contact"
+              className="hover:underline flex items-center gap-2"
+            >
+              <FaEnvelope /> Contact
             </Link>
           </li>
         </ul>

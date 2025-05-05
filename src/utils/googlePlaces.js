@@ -121,50 +121,32 @@ export async function testGooglePlacesAPI(destination) {
   }
 }
 
-export async function findNearbyLocations(apiKey, placeName) {
-  const client = new Client({});
-
-  try {
-    // Get the place ID and coordinates for the given place name
-    const placesResult = await client.textSearch({
-      params: {
-        query: placeName,
-        key: apiKey,
-      },
-    });
-
-    if (!placesResult.data.results || placesResult.data.results.length === 0) {
-      console.log("No results found for the given place name");
-      return [];
-    }
-
-    const place = placesResult.data.results[0];
-    const { lat, lng } = place.geometry.location;
-
-    console.log(
-      `Coordinates of ${placeName}: Latitude ${lat}, Longitude ${lng}`
+export async function findNearbyLocations(apiKey, destination) {
+  if (!apiKey) {
+    console.error(
+      "API Key is missing. Make sure your .env file is set up correctly."
     );
-
-    // Find nearby locations using the coordinates
-    const nearbyResult = await client.placesNearby({
-      params: {
-        location: { lat, lng },
-        radius: 5000, // Radius in meters
-        key: apiKey,
-      },
-    });
-
-    if (!nearbyResult.data.results || nearbyResult.data.results.length === 0) {
-      console.log("No nearby locations found");
-      return [];
-    }
-
-    return nearbyResult.data.results.map((location) => ({
-      name: location.name,
-      vicinity: location.vicinity,
-    }));
+    return [];
+  }
+  try {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const prompt = `List popular nearby locations (with a short description for each) to ${destination} for a traveler. Format: Name - Description.  give directly destination names and theiir brief description and remove * from the content`;
+    const result = await model.generateContent(prompt);
+    const response = await result.response.text();
+    // Parse the response into an array of objects
+    return response
+      .split("\n")
+      .filter(Boolean)
+      .map((line) => {
+        const [name, ...descArr] = line.split(" - ");
+        return {
+          name: name?.trim() || line.trim(),
+          vicinity: descArr.join(" - ").trim(),
+        };
+      });
   } catch (error) {
-    console.error("Error fetching nearby locations:", error);
+    console.error("Error generating nearby locations:", error);
     return [];
   }
 }
