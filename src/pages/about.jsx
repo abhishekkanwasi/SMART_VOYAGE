@@ -41,19 +41,11 @@ export default function About() {
           </p>
         </div>
 
-        <div className="max-w-3xl mx-auto bg-gray-800 shadow-lg p-6 mb-6">
-          <h3 className="text-2xl font-semibold mb-4">Project Information</h3>
-          <p>
-            This project is a final year B.Tech CSE project at DIT University,
-            Dehradun.
-          </p>
-        </div>
+    
 
         <div className="max-w-3xl mx-auto bg-gray-800 shadow-lg p-6 mb-6">
-          <h3 className="text-2xl font-semibold mb-4">Team Members</h3>
+          <h3 className="text-2xl font-semibold mb-4">Project By</h3>
           <ul className="list-disc pl-6">
-            <li>Vidhi Aggarwal</li>
-            <li>Dhruv Singhal</li>
             <li>Abhishek</li>
           </ul>
         </div>

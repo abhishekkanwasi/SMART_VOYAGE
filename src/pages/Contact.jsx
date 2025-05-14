@@ -13,20 +13,8 @@ export default function Contact() {
           <div className="mb-4">
             <strong>College:</strong> DIT University, Dehradun
           </div>
-          <div className="mb-4">
-            <strong>Vidhi Aggarwal</strong>
-            <br />
-            Phone: 9876543210
-            <br />
-            Email: vidhi.aggarwal@dituniversity.edu.in
-          </div>
-          <div className="mb-4">
-            <strong>Dhruv Singhal</strong>
-            <br />
-            Phone: 8765432109
-            <br />
-            Email: dhruv.singhal@dituniversity.edu.in
-          </div>
+         
+          
           <div className="mb-4">
             <strong>Abhishek</strong>
             <br />
