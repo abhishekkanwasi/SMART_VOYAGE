@@ -26,9 +26,10 @@ export default function Home() {
       }}
     >
       <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+
       <div className="absolute inset-0 flex items-center justify-center">
         <div
-          className="relative bg-white bg-opacity-10 backdrop-blur-3xl shadow-2xl w-3/4 h-3/4 flex flex-col items-center text-center p-6 rounded-none"
+          className="relative bg-white bg-opacity-10 backdrop-blur-3xl shadow-2xl w-full sm:w-4/5 md:w-3/4 h-full sm:h-[90%] md:h-3/4 flex flex-col items-center text-center p-4 sm:p-6 rounded-none"
           style={{
             backgroundImage:
               "url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1000&auto=format&fit=crop')",
@@ -37,12 +38,20 @@ export default function Home() {
           }}
         >
           <div className="absolute inset-0 bg-black bg-opacity-40 z-0"></div>
-          <nav className="w-full flex justify-between items-center px-3 py-2 z-10">
-            <div className="flex items-center">
-              <img src="/logo.png" alt="Logo" className="h-12 w-12 mr-3" />
-              <h1 className="text-white text-2xl font-bold">Smart Voyage</h1>
+
+          {/* Navigation */}
+          <nav className="w-full flex flex-col sm:flex-row justify-between items-center px-2 py-3 z-10">
+            <div className="flex items-center mb-2 sm:mb-0">
+              <img
+                src="/logo.png"
+                alt="Logo"
+                className="h-10 w-10 sm:h-12 sm:w-12 mr-2"
+              />
+              <h1 className="text-white text-xl sm:text-2xl font-bold">
+                Smart Voyage
+              </h1>
             </div>
-            <ul className="flex space-x-8 text-white">
+            <ul className="flex flex-col sm:flex-row sm:space-x-8 text-white space-y-2 sm:space-y-0 text-sm sm:text-base">
               <li>
                 <a href="/" className="hover:underline flex items-center gap-2">
                   <FaHome /> Home
@@ -74,6 +83,8 @@ export default function Home() {
               </li>
             </ul>
           </nav>
+
+          {/* Form */}
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -81,21 +92,23 @@ export default function Home() {
             }}
             className="flex flex-col items-center justify-center flex-grow z-10 w-full"
           >
-            <div className="flex items-center justify-center mb-10 animate-bounce-in">
-              <h1 className="text-white text-7xl font-bold font-serif">
+            <div className="mb-8 text-center px-2">
+              <h1 className="text-white text-3xl sm:text-5xl md:text-7xl font-bold font-serif leading-snug">
                 Plan Your Next Adventure
               </h1>
             </div>
+
             <input
               type="text"
               placeholder="Enter destination..."
               value={destination}
               onChange={(e) => setDestination(e.target.value)}
-              className="p-3 text-lg rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-white bg-transparent text-white placeholder-gray-300 w-3/4"
+              className="p-3 text-base sm:text-lg rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-white bg-transparent text-white placeholder-gray-300 w-11/12 sm:w-3/4 md:w-2/3"
             />
+
             <button
               type="submit"
-              className="mt-4 px-6 py-3 bg-blue-500 text-white text-lg font-semibold rounded-md hover:bg-blue-600 transition"
+              className="mt-4 px-5 py-2 sm:px-6 sm:py-3 bg-blue-500 text-white text-base sm:text-lg font-semibold rounded-md hover:bg-blue-600 transition"
             >
               Travel
             </button>
