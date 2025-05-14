@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 import {
   FaHome,
   FaMapMarkerAlt,
@@ -25,6 +26,7 @@ export default function Home() {
           "url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
       }}
     >
+      <Navbar />
       <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
       <div className="absolute inset-0 flex items-center justify-center">
@@ -40,49 +42,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-black bg-opacity-40 z-0"></div>
 
           {/* Navigation */}
-          <nav className="w-full flex flex-col sm:flex-row justify-between items-center px-2 py-3 z-10">
-            <div className="flex items-center mb-2 sm:mb-0">
-              <img
-                src="/logo.png"
-                alt="Logo"
-                className="h-10 w-10 sm:h-12 sm:w-12 mr-2"
-              />
-              <h1 className="text-white text-xl sm:text-2xl font-bold">
-                Smart Voyage
-              </h1>
-            </div>
-            <ul className="flex flex-col sm:flex-row sm:space-x-8 text-white space-y-2 sm:space-y-0 text-sm sm:text-base">
-              <li>
-                <a href="/" className="hover:underline flex items-center gap-2">
-                  <FaHome /> Home
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/nearby-locations"
-                  className="hover:underline flex items-center gap-2"
-                >
-                  <FaMapMarkerAlt /> Nearby Locations
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/about"
-                  className="hover:underline flex items-center gap-2"
-                >
-                  <FaInfoCircle /> About
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/contact"
-                  className="hover:underline flex items-center gap-2"
-                >
-                  <FaEnvelope /> Contact
-                </a>
-              </li>
-            </ul>
-          </nav>
+         
 
           {/* Form */}
           <form
