@@ -18,15 +18,13 @@ export default function Contact() {
           <div className="mb-4">
             <strong>Abhishek</strong>
             <br />
-            Phone: 7654321098
+            Phone: 8433095327
             <br />
-            Email: abhishek@dituniversity.edu.in
+            Email: abhishekkanwasikannu15103@gmail.com
+            
           </div>
         </div>
-        <div className="mt-6 text-center text-gray-400 text-sm">
-          This is a demo contact page. The above contact details are for
-          demonstration purposes only.
-        </div>
+        
       </div>
     </div>
   );
