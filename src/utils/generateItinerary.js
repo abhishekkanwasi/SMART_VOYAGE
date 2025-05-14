@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function generateItinerary(destination, days) {
-  const apiKey = import.meta.env.VITE_API_KEY; // Load API key
+  const apiKey = ; // Load API key
   console.log("Loaded API Key:", apiKey); // Debugging log
 
   if (!apiKey) {
