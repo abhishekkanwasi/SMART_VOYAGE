@@ -20,9 +20,9 @@ export default function Contact() {
             <strong>Abhishek</strong>
             <strong>Vidhi Agarwal</strong>
             <br />
-            Phone: 8433095327
+            
             <br />
-            Email: abhishekkanwasikannu15103@gmail.com
+            
           </div>
         </div>
       </div>
