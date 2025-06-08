@@ -16,13 +16,15 @@ export default function Contact() {
 
           <div className="mb-4">
             <strong>Team Members:</strong>
+            <hr />
             <strong>Dhruv Singhal</strong>
+            <hr />
             <strong>Abhishek</strong>
+            <hr />
             <strong>Vidhi Agarwal</strong>
             <br />
-            
+
             <br />
-            
           </div>
         </div>
       </div>
